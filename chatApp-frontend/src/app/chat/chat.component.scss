@@ -1,0 +1,36 @@
+
+//Scrollbar Chrome
+.custom_scrollbar::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 10px;
+  background-color: #414040;
+}
+
+.custom_scrollbar::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 10px;
+}
+
+//Scrollbar Firefox
+.custom_scrollbar {
+  scrollbar-width: 5px;
+  scrollbar-color: #414040;
+}
+
+.message {
+  animation-name: MessagePoppingUp;
+  animation-duration: 300ms;
+  position: relative;
+}
+
+@keyframes MessagePoppingUp {
+  0% {
+    bottom: -100px;
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    bottom: 0;
+  }
+}
