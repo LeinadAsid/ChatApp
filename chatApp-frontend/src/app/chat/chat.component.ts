@@ -25,6 +25,7 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.chat.newChatMessage$.subscribe((val: Message) => {
       this.messages.push(val);
+      this.scrollMessageContainerDown();
     });
   }
 
@@ -39,6 +40,10 @@ export class ChatComponent implements OnInit {
 
     this.chat.sendMessage(messageObj);
 
+    this.scrollMessageContainerDown();
+  }
+
+  scrollMessageContainerDown() {
     const elementScroll = document.getElementById('messageContainer');
 
     setTimeout(() => {
