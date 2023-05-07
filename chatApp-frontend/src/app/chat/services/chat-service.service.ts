@@ -7,9 +7,7 @@ import { catchError, of } from 'rxjs';
   providedIn: 'root',
 })
 export class ChatServiceService {
-  newChatMessage$ = this.socket
-    .fromEvent<Message>('newMessage')
-    .pipe(catchError((err) => of(err)));
+  newChatMessage$ = this.socket.fromEvent<Message>('newMessage');
   isConnected$ = this.socket.fromEvent<boolean>('connectionConfirmed');
 
   constructor(private socket: Socket) {}
