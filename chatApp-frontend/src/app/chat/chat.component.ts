@@ -25,6 +25,7 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     this.chat.newChatMessage$.subscribe((val: Message) => {
+      console.log(val);
       this.messages.push(val);
       this.scrollMessageContainerDown();
     });

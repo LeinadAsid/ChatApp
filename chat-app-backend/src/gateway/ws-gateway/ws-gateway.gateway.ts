@@ -22,14 +22,20 @@ export class WsGatewayGateway
   handleConnection(client: Socket, ...args: any[]) {
     this.connSocket.emit('connectionConfirmed', true);
 
+    console.log('handling Connection');
+
     this.socketsChanged(client.id);
   }
 
   handleDisconnect(client: Socket) {
+    console.log('handling Disconnection');
+
     this.socketsChanged(client.id);
   }
 
   socketsChanged(clientID: string) {
+    console.log('socketsChanged');
+
     const oldValue = this.sockets.length;
 
     const foundIndex = this.sockets.findIndex((id) => id === clientID);
@@ -49,6 +55,8 @@ export class WsGatewayGateway
   }
 
   sendSystemMessage(message: string) {
+    console.log('sendSystemMessage');
+
     this.connSocket.to(this.sockets).emit('newMessage', {
       sentTime: new Date(),
       author: '-SYSTEM-',
