@@ -58,6 +58,14 @@ export class WsGatewayGateway
 
   @SubscribeMessage('sentNewMessage')
   handleMessage(@MessageBody() message: Message): WsResponse<Message> {
+    if (message.type === 'attach' || message.type === 'messageAttach') {
+      const img = Buffer.from(message.message as ArrayBuffer).toString(
+        'base64',
+      );
+
+      message.message = 'data:image/png;base64,' + img;
+    }
+
     this.connSocket.to(this.sockets).emit('newMessage', message);
     return undefined;
   }

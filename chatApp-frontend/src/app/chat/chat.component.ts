@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Message, User } from './interfaces/chat.interface';
@@ -12,14 +12,18 @@ import { skipLast, takeLast } from 'rxjs';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewInit {
   user: User = {
-    name: this.makeid(10),
+    name: '',
   };
 
   messageSize = 68;
   messages: Message[] = [];
   message: string = '';
+
+  chosenName = '';
+
+  modalEl: HTMLDialogElement | undefined = undefined;
 
   constructor(protected chat: ChatServiceService) {}
 
@@ -28,6 +32,16 @@ export class ChatComponent implements OnInit {
       this.messages.push(val);
       this.scrollMessageContainerDown();
     });
+  }
+
+  ngAfterViewInit() {
+    this.modalEl = document.getElementById(
+      'chooseNameModal'
+    ) as HTMLDialogElement;
+
+    if (!this.user.name || this.user.name === '') {
+      this.modalEl.showModal();
+    }
   }
 
   sendMessage(message: string) {
@@ -78,5 +92,58 @@ export class ChatComponent implements OnInit {
       counter += 1;
     }
     return result;
+  }
+
+  chooseName(name: string) {
+    if (name === '' || !name) return;
+
+    this.user.name = name;
+    this.chosenName = '';
+    this.modalEl?.close();
+  }
+
+  async checkPasteContent(evt: ClipboardEvent) {
+    const fileToSend = evt.clipboardData?.files[0];
+
+    if (!fileToSend) return;
+
+    this.emitFileMessage(fileToSend);
+  }
+
+  handleInput(evt: Event) {
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
+  handleDrop(evt: DragEvent) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    const fileToSend = evt.dataTransfer?.files[0];
+
+    if (!fileToSend) return;
+
+    this.emitFileMessage(fileToSend);
+  }
+
+  emitFileMessage(fileToSend: File) {
+    if (!fileToSend) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const rawData = e.target?.result;
+
+      if (!rawData) return;
+
+      this.chat.sendMessage({
+        type: 'attach',
+        message: rawData,
+        author: this.user.name,
+        sentTime: new Date(),
+      });
+    };
+
+    reader.readAsArrayBuffer(fileToSend);
   }
 }

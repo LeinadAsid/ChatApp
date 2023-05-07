@@ -13,6 +13,11 @@ export class ChatServiceService {
   constructor(private socket: Socket) {}
 
   sendMessage(message: Message) {
+
+    if (!message.type) {
+      message.type = 'message';
+    }
+
     this.socket.emit('sentNewMessage', message);
   }
 }
