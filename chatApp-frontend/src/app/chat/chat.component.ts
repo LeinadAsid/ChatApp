@@ -25,12 +25,20 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
   modalEl: HTMLDialogElement | undefined = undefined;
 
+  playingAudio = false;
+  audioEnabled = false;
+
   constructor(protected chat: ChatServiceService) {}
 
   ngOnInit(): void {
     this.chat.newChatMessage$.subscribe((val: Message) => {
       this.messages.push(val);
+
       this.scrollMessageContainerDown();
+
+      if (val.author !== this.user.name && val.author !== '-SYSTEM-') {
+        this.playReceivedAudio();
+      }
     });
   }
 
@@ -145,5 +153,17 @@ export class ChatComponent implements OnInit, AfterViewInit {
     };
 
     reader.readAsArrayBuffer(fileToSend);
+  }
+
+  async playReceivedAudio() {
+    if (this.playingAudio || !this.audioEnabled) return;
+
+    this.playingAudio = true;
+    const audio = new Audio('../../assets/audio/msnaudio.mp3');
+    await audio.play();
+
+    audio.onended = () => {
+      this.playingAudio = false;
+    };
   }
 }

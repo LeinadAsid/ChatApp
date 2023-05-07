@@ -10,9 +10,13 @@
         class="border-[1px] border-gray-400 mt-2 select-none active:bg-gray-200">OK</button>
     </div>
   </dialog>
-
   <div
     class="flex flex-col items-center h-full max-w-3xl w-full md:w-4/5 lg:w-3/5 bg-gray-800 ml-auto mr-auto justify-end">
+
+    <div (click)="audioEnabled = !audioEnabled" class="fixed top-10 right-10 cursor-pointer">
+      <img width="25px" class="convertToWhite" src="../../assets/icons/volume-mute-outline.svg" *ngIf="!audioEnabled">
+      <img width="25px" class="convertToWhite" src="../../assets/icons/volume-high-outline.svg" *ngIf="audioEnabled">
+    </div>
 
     <div id="messageContainer" class="flex flex-col gap-2 w-full p-4 overflow-y-auto custom_scrollbar">
 
