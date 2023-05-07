@@ -22,7 +22,7 @@ export class WsGatewayGateway
   handleConnection(client: Socket, ...args: any[]) {
     this.connSocket.emit('connectionConfirmed', true);
 
-    this.socketsChanged(client.id);
+    return this.socketsChanged(client.id);
   }
 
   handleDisconnect(client: Socket) {
@@ -45,11 +45,11 @@ export class WsGatewayGateway
         ? `Usuário Desconectou | Total Conectados: ${this.sockets.length}`
         : `Usuário Conectou | Total Conectados: ${this.sockets.length}`;
 
-    this.sendSystemMessage(message);
+    return this.sendSystemMessage(message);
   }
 
   sendSystemMessage(message: string) {
-    this.connSocket.to(this.sockets).emit('newMessage', {
+    return this.connSocket.to(this.sockets).emit('newMessage', {
       sentTime: new Date(),
       author: '-SYSTEM-',
       message,
