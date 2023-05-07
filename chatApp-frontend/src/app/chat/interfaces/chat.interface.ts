@@ -7,3 +7,8 @@ export interface Message {
 export interface User {
   name: string;
 }
+
+export interface ConnChanged {
+  oldValue: number;
+  newValue: number;
+}

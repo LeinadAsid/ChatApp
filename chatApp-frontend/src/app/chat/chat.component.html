@@ -13,17 +13,23 @@
         <p class="text-white text-center">Trying to connect...</p>
       </ng-template>
 
-      <div class="p-2 rounded-md message"
-        [ngClass]="msg.author === user.name ? 'self-end bg-slate-900' : 'self-start bg-gray-500'"
-        *ngFor="let msg of messages; index as i">
+      <div class="flex flex-col" *ngFor="let msg of messages; index as i">
 
-        <div class="text-white" [ngClass]="msg.author === user.name ? 'text-right' : 'text-left'">
-          <small>{{msg.author}}</small>
-          <p class="text-lg">{{msg.message}}</p>
-          <div class="text-right">
-            <small>{{msg.sentTime | date:'HH:mm'}}</small>
+        <div *ngIf="msg.author !== '-SYSTEM-'; else sysMsg" class="p-2 rounded-md message" [ngClass]="msg.author === user.name ? 'self-end bg-slate-900' : 'self-start bg-gray-500'">
+
+          <div class="text-white" [ngClass]="msg.author === user.name ? 'text-right' : 'text-left'">
+            <small>{{msg.author}}</small>
+            <p class="text-lg">{{msg.message}}</p>
+            <div class="text-right">
+              <small>{{msg.sentTime | date:'HH:mm'}}</small>
+            </div>
           </div>
+
         </div>
+
+        <ng-template #sysMsg>
+          <p class="text-center text-white">{{msg.message}}</p>
+        </ng-template>
 
       </div>
 

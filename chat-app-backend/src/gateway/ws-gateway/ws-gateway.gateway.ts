@@ -1,6 +1,7 @@
 import {
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -10,7 +11,9 @@ import { Socket } from 'socket.io';
 import { Message } from './interfaces/ws-gateway.interface';
 
 @WebSocketGateway({ cors: true })
-export class WsGatewayGateway implements OnGatewayConnection {
+export class WsGatewayGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   connSocket: Socket;
 
@@ -18,7 +21,39 @@ export class WsGatewayGateway implements OnGatewayConnection {
 
   handleConnection(client: Socket, ...args: any[]) {
     this.connSocket.emit('connectionConfirmed', true);
-    this.sockets.push(client.id);
+
+    this.socketsChanged(client.id);
+  }
+
+  handleDisconnect(client: Socket) {
+    this.socketsChanged(client.id);
+  }
+
+  socketsChanged(clientID: string) {
+    const oldValue = this.sockets.length;
+
+    const foundIndex = this.sockets.findIndex((id) => id === clientID);
+
+    if (foundIndex === -1) {
+      this.sockets.push(clientID);
+    } else {
+      this.sockets.splice(foundIndex, 1);
+    }
+
+    const message =
+      oldValue > this.sockets.length
+        ? `Usuário Desconectou | Total Conectados: ${this.sockets.length}`
+        : `Usuário Conectou | Total Conectados: ${this.sockets.length}`;
+
+    this.sendSystemMessage(message);
+  }
+
+  sendSystemMessage(message: string) {
+    this.connSocket.to(this.sockets).emit('newMessage', {
+      sentTime: new Date(),
+      author: '-SYSTEM-',
+      message,
+    });
   }
 
   @SubscribeMessage('sentNewMessage')
