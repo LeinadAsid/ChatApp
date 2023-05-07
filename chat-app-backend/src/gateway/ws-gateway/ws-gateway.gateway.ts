@@ -10,7 +10,7 @@ import {
 import { Socket } from 'socket.io';
 import { Message } from './interfaces/ws-gateway.interface';
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ cors: true, maxHttpBufferSize: 1e7 })
 export class WsGatewayGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
