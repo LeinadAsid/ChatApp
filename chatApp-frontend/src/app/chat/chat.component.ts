@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ConnChanged, Message, User } from './interfaces/chat.interface';
+import { Message, User } from './interfaces/chat.interface';
 import { ChatServiceService } from './services/chat-service.service';
 import { skipLast, takeLast } from 'rxjs';
 
